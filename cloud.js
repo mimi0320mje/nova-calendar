@@ -76,9 +76,8 @@ if (!configured) {
       try {
         const reg = await navigator.serviceWorker.ready;
         await reg.showNotification(title, opts);
-        alert("DEBUG ✅ Push arrived AND was shown (" + title + "). If you don't see a banner, macOS is hiding it (Focus/Do Not Disturb).");
-      } catch (e) {
-        alert("DEBUG ⚠️ Push arrived but display FAILED: " + ((e && e.message) || e));
+      } catch (_) {
+        try { new Notification(title, opts); } catch (__) { /* give up quietly */ }
       }
     });
   }
@@ -152,7 +151,18 @@ if (!configured) {
       // register the FCM service worker at THAT scope and hand it to getToken —
       // otherwise Firebase looks for /firebase-messaging-sw.js at the site root
       // and fails. Using a relative URL keeps it correct on GitHub Pages.
-      const swReg = await navigator.serviceWorker.register("./firebase-messaging-sw.js");
+      // Remove any leftover service worker from an earlier version (e.g. a
+      // separate firebase-messaging-sw.js) so it can't steal the push subscription.
+      const regs = await navigator.serviceWorker.getRegistrations();
+      for (const r of regs) {
+        const script = (r.active && r.active.scriptURL) || "";
+        if (script && !script.endsWith("/sw.js")) {
+          try { await r.unregister(); } catch (_) { /* ignore */ }
+        }
+      }
+      // Use the single app service worker (sw.js) which now also handles FCM.
+      const swReg = await navigator.serviceWorker.register("./sw.js");
+      await navigator.serviceWorker.ready;
       const token = await getToken(messaging, {
         vapidKey: CONFIG.vapidKey,
         serviceWorkerRegistration: swReg,
