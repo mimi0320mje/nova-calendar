@@ -1,0 +1,9 @@
+{
+  "name": "nova-calendar-scheduler",
+  "description": "GitHub Actions reminder scheduler for Nova Calendar (free, no Blaze).",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "firebase-admin": "^12.6.0"
+  }
+}

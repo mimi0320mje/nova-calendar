@@ -21,7 +21,8 @@ Static front-end (no build step) hosted on **GitHub Pages**, backed by **Firebas
 | `cloud.js` | Firebase login + real-time event sync (the only file that talks to Firebase) |
 | `sw.js` | offline cache, network-first (auto-updates) |
 | `firebase-messaging-sw.js` | receives push while the app is closed |
-| `functions/` | scheduled Cloud Functions: 5-min reminders + 9 AM summary/quote |
+| `scheduler/` | reminder engine run by GitHub Actions (free, no Blaze): 5-min reminders + 9 AM summary/quote |
+| `.github/workflows/reminders.yml` | the free timer that runs the scheduler every ~5 min |
 | `tools/add-event.mjs` | admin helper so Claude can add events to your calendar |
 
 Guest mode (events in `localStorage`) works with no setup; logging in turns on
@@ -31,7 +32,8 @@ cloud sync + reminders.
 
 One-time backend setup is in **[SETUP-firebase.md](SETUP-firebase.md)** — a
 click-by-click guide. You'll create a free Firebase project, paste a few public
-values into `cloud.js` + `firebase-messaging-sw.js`, and deploy the functions.
+values into the code, and add one GitHub secret. **No Blaze plan, no card** — the
+reminder engine runs on free GitHub Actions.
 
 ## Run locally
 

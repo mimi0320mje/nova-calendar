@@ -1,126 +1,59 @@
-# Nova Calendar — one-time setup (Firebase)
+# Nova Calendar — setup (Firebase + free GitHub Actions)
 
-This turns on **login, cross-device sync, and reliable reminders**. You do it once.
-Everything stays **$0** within Firebase's free allowance.
+Turns on **login, cross-device sync, and reliable reminders** — with **no Blaze plan
+and no card**. The reminder scheduler runs on **GitHub Actions** (free for public
+repos) instead of paid Firebase functions.
 
-Most steps are clicks on the Firebase website. A few values you'll copy and **paste to
-Claude** — Claude puts them in the code for you. You never share your password.
-
-> 💜 **Order matters a little, but don't worry** — just go top to bottom. Tell Claude
-> when you hit each "copy this to Claude" step, or if anything looks different.
+Most steps are clicks on the Firebase website. A couple of values you copy and **paste
+to Claude**. You never share your password.
 
 ---
 
-## 0. Install Node.js (needed to deploy the reminder engine)
+## ✅ Already done
+- Firebase project **`nova-calendar-b5ecb`** created.
+- Email/Password login enabled · Firestore created.
+- Web app registered → config pasted to Claude (now in the code).
+- Web Push (VAPID) key pasted to Claude.
 
-1. Go to **https://nodejs.org** and download the **LTS** version for macOS.
-2. Open the downloaded installer and click through it.
-3. That's it — Claude uses it behind the scenes. (This also powers the "Claude adds
-   events for you" feature.)
+## Remaining steps
 
----
+### 1. Paste the database security rules
+So the app can read/write **only your own** data.
+1. Firebase console → **Build → Firestore Database** → **Rules** tab.
+2. Delete what's there and paste the contents of **`firestore.rules`** (Claude will show
+   you the block), then click **Publish**.
 
-## 1. Create your Firebase project
+### 2. Let login work on your live site
+1. **Build → Authentication → Settings → Authorized domains → Add domain**.
+2. Add **`mimi0320mje.github.io`** → Add. (`localhost` is already there.)
 
-1. Go to **https://console.firebase.google.com** and sign in with your Google account.
-2. Click **Create a project** (or **Add project**).
-3. Name it **`nova-calendar`**. Click Continue.
-4. Google Analytics — you can **turn it off** (not needed). Click **Create project**.
-5. Wait for it to finish, then click **Continue**.
+### 3. Download the secret key → give it to Claude
+This lets the reminder scheduler send pushes, and lets Claude add events for you.
+1. **⚙️ Project settings → Service accounts** tab.
+2. **Generate new private key** → **Generate key** → a `.json` file downloads.
+3. Tell Claude where it downloaded (usually your **Downloads** folder). Claude will:
+   - store it locally (gitignored, never uploaded), and
+   - add it as an **encrypted GitHub secret** so the scheduler can run.
 
----
+> 🔒 The key is a real secret. It never goes into the public repo — only into your Mac
+> and GitHub's encrypted secrets.
 
-## 2. Turn on Email/Password login
-
-1. Left sidebar → **Build → Authentication** → **Get started**.
-2. On the **Sign-in method** tab, click **Email/Password**.
-3. Toggle the first switch **On** (leave "passwordless" off). Click **Save**.
-
----
-
-## 3. Create the database (Firestore)
-
-1. Left sidebar → **Build → Firestore Database** → **Create database**.
-2. Choose a location close to you (e.g. `eur3` or `nam5`). Click **Next**.
-3. Pick **Start in production mode** (Claude provides the security rules). Click
-   **Create**.
-
----
-
-## 4. Register the app + copy the config → to Claude
-
-1. Click the **gear icon** (top-left, next to "Project Overview") → **Project settings**.
-2. Scroll to **Your apps** → click the **`</>`** (Web) icon.
-3. App nickname: **`nova`**. **Don't** check "Firebase Hosting". Click **Register app**.
-4. You'll see a code block with `const firebaseConfig = { … }`.
-   **Copy the whole `firebaseConfig` block and paste it to Claude.**
-   (These values are public and safe to share.)
-5. Click **Continue to console**.
+### 4. (Optional) Install Node.js
+Only needed for the "Claude adds events from chat" helper (the reminders don't need it).
+Get the **LTS** installer from **https://nodejs.org** and click through it.
 
 ---
 
-## 5. Turn on push + copy the key → to Claude
-
-1. Still in **Project settings**, open the **Cloud Messaging** tab.
-2. Under **Web configuration → Web Push certificates**, click **Generate key pair**.
-3. A long key appears (the "key pair"). **Copy it and paste it to Claude** — this is
-   the public VAPID key.
-
----
-
-## 6. Upgrade to the Blaze plan (required for scheduled reminders)
-
-> This is the one step that needs a card. **It stays $0** — the scheduled reminders use
-> a tiny fraction of the free monthly allowance. Google just requires a card on file for
-> any project that runs scheduled functions.
-
-1. Bottom-left → click the plan name (**Spark**) → **Upgrade** → **Blaze (Pay as you go)**.
-2. Follow the prompts to add a payment method. (Optional: set a **budget alert** of a
-   couple dollars for peace of mind — you won't reach it.)
-
----
-
-## 7. Log in to Firebase from your Mac (for Claude to deploy)
-
-Claude will run these with you — you mainly approve a browser pop-up:
-
-1. Claude installs the Firebase tool (`npm install -g firebase-tools`).
-2. Claude runs `firebase login` → a browser opens → **sign in with the same Google
-   account** and allow access.
-
----
-
-## 8. Download the secret key (so Claude can add events for you)
-
-1. **Project settings → Service accounts** tab.
-2. Click **Generate new private key** → **Generate key**. A `.json` file downloads.
-3. Move that file to the project at **`tools/serviceAccountKey.json`** (Claude will tell
-   you the exact spot, or just tell Claude where it downloaded).
-
-> 🔒 This file is a **real secret**. It's already in `.gitignore`, so it will **never** be
-> uploaded to GitHub. Keep it only on your Mac.
-
-Also grab your **user id**: **Authentication → Users** → after you sign up in the app,
-copy the **User UID** and paste it to Claude (fixes the calendar to your account).
-
----
-
-## What Claude does with what you paste
-
-- Puts your **firebaseConfig** into `cloud.js` **and** `firebase-messaging-sw.js`.
-- Puts your **VAPID key** into `cloud.js`.
-- Puts your **project id** into `.firebaserc`, then **deploys** the database rules +
-  the two reminder functions.
-- Sets your **uid** in the admin helper.
-
----
+## What Claude does after you finish
+- Sets the `FIREBASE_SERVICE_ACCOUNT` GitHub secret from your key.
+- Confirms the **Nova reminders** GitHub Action is live (already in the repo).
+- Triggers a test run + helps you send yourself a real reminder.
 
 ## Then — the fun part
-
 1. Open the app, **Sign up** with an email + password.
 2. Tap the **🔔 bell** to allow notifications.
-3. Add a test event **~6 minutes** from now → you should get a push ~5 min before.
-4. **Add to Home Screen** on your phone (on iPhone this is required for push) and repeat.
+3. Add a test event a few minutes out → you'll get a push shortly before it.
+4. **Add to Home Screen** on your phone (required for push on iPhone) and repeat.
 5. Ask Claude: *"add lunch with Sara tomorrow at 12:30"* → watch it appear on your phone.
 
-Done! 🎉
+Done — and $0, no card. 🎉

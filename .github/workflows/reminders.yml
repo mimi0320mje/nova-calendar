@@ -1,0 +1,30 @@
+name: Nova reminders
+
+# Runs the reminder scheduler on a timer — free for public repos, no card needed.
+# GitHub's cron granularity is 5 minutes (and can occasionally run a little late).
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {} # lets you (or Claude) trigger a run by hand for testing
+
+# Avoid overlapping runs if one is slow.
+concurrency:
+  group: nova-reminders
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install deps
+        working-directory: scheduler
+        run: npm install --omit=dev
+      - name: Send due notifications
+        working-directory: scheduler
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node run.mjs

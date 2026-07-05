@@ -1,9 +1,9 @@
-/* A generous list of short, inspiring quotes for the good-morning greeting.
- * The daily job tracks which have been sent (users/{uid}.usedQuotes) and never
+/* Inspiring quotes for the good-morning greeting (ESM).
+ * The scheduler tracks which have been sent (users/{uid}.usedQuotes) and never
  * repeats one until the whole list has been shown, then reshuffles.
  * Add more freely — order doesn't matter.
  */
-const QUOTES = [
+export const QUOTES = [
   "The secret of getting ahead is getting started. — Mark Twain",
   "Well begun is half done. — Aristotle",
   "Little by little, one travels far. — J.R.R. Tolkien",
@@ -65,5 +65,3 @@ const QUOTES = [
   "Your only limit is you.",
   "Keep going. Everything you need will come to you at the perfect time.",
 ];
-
-module.exports = { QUOTES };
