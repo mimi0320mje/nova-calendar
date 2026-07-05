@@ -129,7 +129,15 @@ if (!configured) {
     // Register this device for push + record the timezone the 9am job uses.
     async enableMessaging() {
       if (!messaging) throw new Error("Push not supported here");
-      const token = await getToken(messaging, { vapidKey: CONFIG.vapidKey });
+      // The app is served from a subpath (e.g. /nova-calendar/), so we must
+      // register the FCM service worker at THAT scope and hand it to getToken —
+      // otherwise Firebase looks for /firebase-messaging-sw.js at the site root
+      // and fails. Using a relative URL keeps it correct on GitHub Pages.
+      const swReg = await navigator.serviceWorker.register("./firebase-messaging-sw.js");
+      const token = await getToken(messaging, {
+        vapidKey: CONFIG.vapidKey,
+        serviceWorkerRegistration: swReg,
+      });
       if (!token) throw new Error("No push token");
       await setDoc(userDoc(currentUser.uid), {
         fcmTokens: arrayUnion(token),
