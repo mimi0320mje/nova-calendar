@@ -267,8 +267,12 @@
       await window.NovaCloud.enableMessaging();
       toast("Reminders on 🔔");
     } catch (e) {
-      toast("Couldn't turn on reminders");
       console.error(e);
+      // Surface the real reason (visible on phones with no dev console) so it
+      // can be diagnosed. Firebase errors carry a .code; others a .message.
+      const detail = (e && (e.code || e.message)) || "unknown error";
+      alert("Couldn't turn on reminders.\n\nReason: " + detail +
+        "\n\n(Screenshot this and send it to Claude.)");
     }
   }
 
