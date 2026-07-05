@@ -10,12 +10,12 @@ importScripts("https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js
 importScripts("https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js");
 
 firebase.initializeApp({
-  apiKey: "PASTE_API_KEY",
-  authDomain: "PASTE_PROJECT.firebaseapp.com",
-  projectId: "PASTE_PROJECT_ID",
-  storageBucket: "PASTE_PROJECT.appspot.com",
-  messagingSenderId: "PASTE_SENDER_ID",
-  appId: "PASTE_APP_ID",
+  apiKey: "AIzaSyB-l8B3UpPB2pr_nSvPWoMDT0VyJ45HviU",
+  authDomain: "nova-calendar-b5ecb.firebaseapp.com",
+  projectId: "nova-calendar-b5ecb",
+  storageBucket: "nova-calendar-b5ecb.firebasestorage.app",
+  messagingSenderId: "197755533221",
+  appId: "1:197755533221:web:9ab775b5c249470c7d1a4c",
 });
 
 const messaging = firebase.messaging();
