@@ -56,13 +56,31 @@ if (!configured) {
     getFirestore, collection, onSnapshot, doc, setDoc, deleteDoc,
     updateDoc, serverTimestamp, Timestamp, arrayUnion, query, orderBy,
   } = dbMod;
-  const { getMessaging, getToken } = msgMod;
+  const { getMessaging, getToken, onMessage } = msgMod;
 
   const app = initializeApp(CONFIG.firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
   let messaging = null;
   try { messaging = getMessaging(app); } catch { /* unsupported browser */ }
+
+  // Foreground messages: when the app tab is OPEN and focused, Firebase does NOT
+  // auto-display the push — it delivers it here instead. Show it ourselves so a
+  // reminder appears whether the app is open or closed. (The closed/background
+  // case is handled by firebase-messaging-sw.js.)
+  if (messaging) {
+    onMessage(messaging, async (payload) => {
+      const n = (payload && payload.notification) || {};
+      const title = n.title || "Nova Calendar";
+      const opts = { body: n.body || "", icon: "./icons/icon-192.png", tag: (payload.data && payload.data.tag) || "nova" };
+      try {
+        const reg = await navigator.serviceWorker.ready;
+        await reg.showNotification(title, opts);
+      } catch (_) {
+        try { new Notification(title, opts); } catch (__) { /* give up quietly */ }
+      }
+    });
+  }
 
   const eventsCol = (uid) => collection(db, "users", uid, "events");
   const userDoc = (uid) => doc(db, "users", uid);
