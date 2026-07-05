@@ -1,0 +1,16 @@
+{
+  "name": "Nova Calendar",
+  "short_name": "Nova",
+  "description": "A personal calendar with reliable reminders and a good-morning greeting.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1c2233",
+  "theme_color": "#1c2233",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

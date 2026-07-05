@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "nova",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "5178", "--directory", "/Users/miachen/Projects/nova-calendar"],
+      "port": 5178
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "nova-calendar-admin",
+  "description": "Local helper so Claude can add events to your calendar.",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "firebase-admin": "^12.6.0"
+  }
+}

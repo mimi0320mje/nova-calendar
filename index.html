@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#1c2233" />
+    <title>Nova Calendar</title>
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="apple-touch-icon" href="./icons/icon-180.png" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="top">
+        <div class="brand">
+          <!-- Nova spark: a small star-like glyph, echoing the drifting dots -->
+          <svg class="spark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 2c.5 3.8 2.2 5.5 6 6-3.8.5-5.5 2.2-6 6-.5-3.8-2.2-5.5-6-6 3.8-.5 5.5-2.2 6-6Z"
+              fill="currentColor"
+            />
+          </svg>
+          <h1>Nova Calendar</h1>
+        </div>
+        <div class="top-actions">
+          <!-- Outline bell = reminders / notifications (replaces the "star") -->
+          <button id="bellBtn" class="icon-btn outline" title="Enable reminders" aria-label="Enable reminders">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.7 21a2 2 0 0 1-3.4 0" />
+            </svg>
+          </button>
+          <!-- Filled plus = add event (replaces the "heart") -->
+          <button id="addBtn" class="icon-btn filled" title="Add event" aria-label="Add event">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- iOS install hint (shown only when needed) -->
+      <div id="installHint" class="hint hidden">
+        📲 To get reminders on iPhone, tap <b>Share</b> then <b>Add to Home Screen</b>, and open Nova from there.
+      </div>
+
+      <section class="card">
+        <div class="cal-head">
+          <div class="cal-title" id="calTitle">Month YYYY</div>
+          <div class="nav">
+            <button id="prevBtn" aria-label="Previous month">‹</button>
+            <button id="todayBtn" aria-label="Today" style="font-size:13px;width:auto;padding:0 10px;">Today</button>
+            <button id="nextBtn" aria-label="Next month">›</button>
+          </div>
+        </div>
+        <div class="grid" id="dow"></div>
+        <div class="grid" id="days"></div>
+      </section>
+
+      <section class="day-panel">
+        <h2 id="dayTitle">Events</h2>
+        <ul class="events" id="eventList"></ul>
+      </section>
+
+      <div class="status" id="status"></div>
+    </main>
+
+    <!-- Add / edit event modal -->
+    <div class="modal-backdrop" id="modal">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <h3 id="modalTitle">New event</h3>
+        <input type="hidden" id="eventId" />
+        <div class="field">
+          <label for="fTitle">Title</label>
+          <input id="fTitle" type="text" placeholder="e.g. Dentist" maxlength="120" />
+        </div>
+        <div class="field">
+          <label for="fDate">Date</label>
+          <input id="fDate" type="date" />
+        </div>
+        <div class="field">
+          <label for="fTime">Time</label>
+          <input id="fTime" type="time" />
+        </div>
+        <div class="field">
+          <label for="fNote">Note (optional)</label>
+          <textarea id="fNote" placeholder="Anything to remember…" maxlength="500"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button class="btn ghost" id="cancelBtn">Cancel</button>
+          <button class="btn primary" id="saveBtn">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auth modal -->
+    <div class="modal-backdrop" id="authModal">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+        <h3 id="authTitle">Log in to sync</h3>
+        <div class="field">
+          <label for="aEmail">Email</label>
+          <input id="aEmail" type="email" autocomplete="email" placeholder="you@example.com" />
+        </div>
+        <div class="field">
+          <label for="aPass">Password</label>
+          <input id="aPass" type="password" autocomplete="current-password" placeholder="••••••••" />
+        </div>
+        <div class="status" id="authMsg" style="margin-top:0;text-align:left;color:var(--muted);"></div>
+        <div class="modal-actions">
+          <button class="btn ghost" id="authCancel">Cancel</button>
+          <button class="btn" id="signupBtn">Sign up</button>
+          <button class="btn primary" id="loginBtn">Log in</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="./background.js"></script>
+    <!-- cloud.js is a module (Firebase). It loads optionally; app.js works without it. -->
+    <script type="module" src="./cloud.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
