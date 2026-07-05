@@ -76,8 +76,9 @@ if (!configured) {
       try {
         const reg = await navigator.serviceWorker.ready;
         await reg.showNotification(title, opts);
-      } catch (_) {
-        try { new Notification(title, opts); } catch (__) { /* give up quietly */ }
+        alert("DEBUG ✅ Push arrived AND was shown (" + title + "). If you don't see a banner, macOS is hiding it (Focus/Do Not Disturb).");
+      } catch (e) {
+        alert("DEBUG ⚠️ Push arrived but display FAILED: " + ((e && e.message) || e));
       }
     });
   }
