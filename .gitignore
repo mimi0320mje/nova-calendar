@@ -19,3 +19,6 @@ ui-debug.log
 
 # macOS
 .DS_Store
+
+# Local account id (not for public repo)
+tools/nova-uid.txt

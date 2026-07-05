@@ -25,8 +25,13 @@ import { getFirestore, Timestamp } from "firebase-admin/firestore";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Your single-user account id. Set once (or override with --uid).
-const NOVA_UID = process.env.NOVA_UID || "PASTE_YOUR_UID";
+// Your single-user account id. Read from env, or a local gitignored nova-uid.txt,
+// so your account id stays OUT of the public repo. Override with --uid if needed.
+let NOVA_UID = process.env.NOVA_UID || "PASTE_YOUR_UID";
+try {
+  const fromFile = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "nova-uid.txt"), "utf8").trim();
+  if (fromFile) NOVA_UID = fromFile;
+} catch { /* no local uid file — rely on env or --uid */ }
 
 // ---- parse flags ----
 const args = process.argv.slice(2);
